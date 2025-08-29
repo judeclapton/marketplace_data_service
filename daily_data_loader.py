@@ -4,9 +4,9 @@ from base_data_loader import _BaseDataLoader
 
 
 class DailyDataLoader(_BaseDataLoader):
-    def __init__(self, api_client, name='DailyLoader'):
-        super().__init__(api_client, name)
+    def __init__(self, api_client, parser, name='DailyDataLoader'):
+        super().__init__(api_client, parser, name)
 
-    def run(self):
+    def load(self):
         target_date = date.today() - timedelta(days=1)
         self._load_range(target_date, target_date)

@@ -7,8 +7,8 @@ from base_data_loader import _BaseDataLoader
 
 
 class HistoricalDataLoader(_BaseDataLoader):
-    def __init__(self, api_client, from_date=date(2020, 1, 1), name='HistoricalLoader'):
-        super().__init__(api_client, name)
+    def __init__(self, api_client, parser, from_date=date(2020, 1, 1), name='HistoricalDataLoader'):
+        super().__init__(api_client, parser, name)
         self.from_date = from_date
         self.api_url = os.getenv('API_URL')
 
@@ -35,7 +35,7 @@ class HistoricalDataLoader(_BaseDataLoader):
         self.logger.info(f'Первая доступная дата с данными: {low}')
         return low
 
-    def run(self):
+    def load(self):
         start_date = self._get_first_date()
         end_date = date.today() - timedelta(days=1)
         self._load_range(start_date, end_date)
