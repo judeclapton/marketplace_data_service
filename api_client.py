@@ -12,15 +12,11 @@ class ApiClient:
         self.logger = Logger(name).get_logger()
 
     def get_data(self, date):
-        if not isinstance(date, str):
-            date = date.isoformat()
-
         params = {'date': date}
         self.logger.info(f'Запрос данных с API за {date}')
 
         try:
             response = requests.get(self.api_url, params=params)
-            self.logger.info(f'Ответ от API: статус {response.status_code}')
 
             if response.status_code == 200:
                 try:
