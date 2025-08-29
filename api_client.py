@@ -1,13 +1,10 @@
 import os
 import requests
 from logger import Logger
-from dotenv import load_dotenv
 
 
 class ApiClient:
     def __init__(self, name='ApiClient'):
-        load_dotenv()
-
         self.api_url = os.getenv('API_URL')
         self.logger = Logger(name).get_logger()
 

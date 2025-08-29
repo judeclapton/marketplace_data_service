@@ -8,7 +8,6 @@ class _BaseDataLoader:
         self.api_client = api_client
         self.parser = parser
         self.db_client = db_client
-        self.db_client.create_table()
 
     def _fetch_date(self, date):
         return self.api_client.get_data(date)

@@ -14,23 +14,37 @@ class DBClient:
         self.cursor = self.connection.cursor()
         self.table = 'purchases'
 
-    def create_table(self):
+    def _table_exists(self):
         query = f'''
-        CREATE TABLE IF NOT EXISTS {self.table} (
-            client_id INT,
-            gender VARCHAR(1),
-            purchase_datetime TIMESTAMP,
-            product_id INT,
-            quantity INT,
-            price_per_item FLOAT,
-            discount_per_item FLOAT,
-            total_price FLOAT,
-            CONSTRAINT unique_purchase UNIQUE (client_id, purchase_datetime, product_id)
+        SELECT EXISTS (
+            SELECT FROM information_schema.tables 
+            WHERE table_schema = 'public' AND table_name = '{self.table}'
         )
         '''
         self.cursor.execute(query)
-        self.connection.commit()
-        self.logger.info(f'Таблица {self.table} создана или уже существует')
+        return self.cursor.fetchone()[0]
+
+    def create_table(self):
+        if self._table_exists():
+            log_message = f'Таблица {self.table} уже существует'
+        else:
+            query = f'''
+            CREATE TABLE IF NOT EXISTS {self.table} (
+                client_id INT,
+                gender VARCHAR(1),
+                purchase_datetime TIMESTAMP,
+                product_id INT,
+                quantity INT,
+                price_per_item FLOAT,
+                discount_per_item FLOAT,
+                total_price FLOAT,
+                CONSTRAINT unique_purchase UNIQUE (client_id, purchase_datetime, product_id)
+            )
+            '''
+            self.cursor.execute(query)
+            self.connection.commit()
+            log_message = f'Таблица {self.table} создана'
+        self.logger.info(log_message)
 
     def _get_table_size(self):
         self.cursor.execute(f'SELECT COUNT(*) FROM {self.table}')
