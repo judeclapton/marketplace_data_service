@@ -1,13 +1,14 @@
 from datetime import timedelta
-
 from logger import Logger
 
 
 class _BaseDataLoader:
-    def __init__(self, api_client, parser, name='BaseDataLoader'):
+    def __init__(self, api_client, db_client, parser, name):
         self.logger = Logger(name).get_logger()
         self.api_client = api_client
         self.parser = parser
+        self.db_client = db_client
+        self.db_client.create_table()
 
     def _fetch_date(self, date):
         return self.api_client.get_data(date)
@@ -20,7 +21,7 @@ class _BaseDataLoader:
             if data:
                 valid_data = self.parser.process(data)
                 if valid_data:
-                    pass  # TODO: тут будет загрузка данных в БД
+                    self.db_client.insert_data(valid_data)
             else:
                 self.logger.info(f'Данных за {current_date} нет')
             current_date += timedelta(days=1)

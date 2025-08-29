@@ -1,14 +1,13 @@
 import os
 from datetime import date, timedelta
-
 import requests
-
 from base_data_loader import _BaseDataLoader
 
 
 class HistoricalDataLoader(_BaseDataLoader):
-    def __init__(self, api_client, parser, from_date=date(2020, 1, 1), name='HistoricalDataLoader'):
-        super().__init__(api_client, parser, name)
+    def __init__(self, api_client, db_client, parser,
+                 from_date=date(2020, 1, 1), name='HistoricalDataLoader'):
+        super().__init__(api_client, db_client, parser, name)
         self.from_date = from_date
         self.api_url = os.getenv('API_URL')
 
