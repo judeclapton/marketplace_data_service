@@ -4,7 +4,7 @@ import pandas as pd
 
 class DataParsing:
     def __init__(self, name='DataParsing'):
-        self.logger = Logger(name).get_logger()
+        self._logger = Logger(name).get_logger()
 
     @staticmethod
     def _preprocess(record):
@@ -19,23 +19,23 @@ class DataParsing:
                       'discount_per_item', 'total_price']
         for field in req_fields:
             if field not in record:
-                self.logger.warning(f'Пропущено или пустое поле {field} в записи: {record}')
+                self._logger.warning(f'Пропущено или пустое поле {field} в записи: {record}')
                 return False
 
         if record['gender'] not in ['F', 'M']:
-            self.logger.warning(f'Недопустимое значение gender: {record["gender"]} в записи: {record}')
+            self._logger.warning(f'Недопустимое значение gender: {record["gender"]} в записи: {record}')
             return False
 
         numeric_fields = ['quantity', 'price_per_item', 'discount_per_item', 'total_price']
         for field in numeric_fields:
             if record[field] < 0:
-                self.logger.warning(f'Отрицательное значение в поле {field}: {record[field]} в записи: {record}')
+                self._logger.warning(f'Отрицательное значение в поле {field}: {record[field]} в записи: {record}')
                 return False
 
         try:
             self._preprocess(record)
         except Exception as ex:
-            self.logger.error(f'Ошибка при преобразовании даты/времени: {ex} в записи: {record}')
+            self._logger.error(f'Ошибка при преобразовании даты/времени: {ex} в записи: {record}')
             return False
 
         return True
@@ -55,5 +55,5 @@ class DataParsing:
                     'total_price': record['total_price']
                 }
                 output_data.append(valid_record)
-        self.logger.info(f'Успешно обработано {len(output_data)} записей из {len(input_data)}')
+        self._logger.info(f'Успешно обработано {len(output_data)} записей из {len(input_data)}')
         return output_data

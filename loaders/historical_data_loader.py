@@ -8,16 +8,16 @@ class HistoricalDataLoader(BaseDataLoader):
     def __init__(self, api_client, db_client, parser,
                  from_date=date(2020, 1, 1), name='HistoricalDataLoader'):
         super().__init__(api_client, db_client, parser, name)
-        self.from_date = from_date
-        self.api_url = os.getenv('API_URL')
+        self._from_date = from_date
+        self._api_url = os.getenv('API_URL')
 
-    def _has_data(self, date):
-        url = f'{self.api_client.api_url}?date={date}'
+    def _has_data(self, on_date):
+        url = f'{self._api_url}?date={on_date}'
         return requests.get(url).text != 'Информация за более ранние периоды отсутствует'
 
     def _get_first_date(self):
-        self.logger.info('Поиск первой даты с данными')
-        low = self.from_date
+        self._logger.info('Поиск первой даты с данными')
+        low = self._from_date
         step = timedelta(days=365)
         high = low
 
@@ -31,7 +31,7 @@ class HistoricalDataLoader(BaseDataLoader):
             else:
                 low = mid + timedelta(days=1)
 
-        self.logger.info(f'Первая доступная дата с данными: {low}')
+        self._logger.info(f'Первая доступная дата с данными: {low}')
         return low
 
     def load(self, start_date=None, end_date=None):

@@ -6,30 +6,30 @@ from psycopg2.extras import execute_values
 
 class DBClient:
     def __init__(self, name='DBClient'):
-        self.logger = Logger(name).get_logger()
-        self.connection = psycopg2.connect(
+        self._logger = Logger(name).get_logger()
+        self._connection = psycopg2.connect(
             user=os.getenv('PG_USER'), password=os.getenv('PG_PASSWORD'),
             host=os.getenv('PG_HOST'), port=os.getenv('PG_PORT'), dbname=os.getenv('PG_DBNAME')
         )
-        self.cursor = self.connection.cursor()
-        self.table = 'purchases'
+        self._cursor = self._connection.cursor()
+        self._table = 'purchases'
 
     def _table_exists(self):
         query = f'''
         SELECT EXISTS (
             SELECT FROM information_schema.tables 
-            WHERE table_schema = 'public' AND table_name = '{self.table}'
+            WHERE table_schema = 'public' AND table_name = '{self._table}'
         )
         '''
-        self.cursor.execute(query)
-        return self.cursor.fetchone()[0]
+        self._cursor.execute(query)
+        return self._cursor.fetchone()[0]
 
     def create_table(self):
         if self._table_exists():
-            log_message = f'Таблица {self.table} уже существует'
+            log_message = f'Таблица {self._table} уже существует'
         else:
             query = f'''
-            CREATE TABLE IF NOT EXISTS {self.table} (
+            CREATE TABLE IF NOT EXISTS {self._table} (
                 client_id INT,
                 gender VARCHAR(1),
                 purchase_datetime TIMESTAMP,
@@ -41,18 +41,18 @@ class DBClient:
                 CONSTRAINT unique_purchase UNIQUE (client_id, purchase_datetime, product_id)
             )
             '''
-            self.cursor.execute(query)
-            self.connection.commit()
-            log_message = f'Таблица {self.table} создана'
-        self.logger.info(log_message)
+            self._cursor.execute(query)
+            self._connection.commit()
+            log_message = f'Таблица {self._table} создана'
+        self._logger.info(log_message)
 
     def _get_row_count(self):
-        self.cursor.execute(f'SELECT COUNT(*) FROM {self.table}')
-        return self.cursor.fetchone()[0]
+        self._cursor.execute(f'SELECT COUNT(*) FROM {self._table}')
+        return self._cursor.fetchone()[0]
 
     def insert_data(self, data):
         if not data:
-            self.logger.warning('Данных для вставки не найдено')
+            self._logger.warning('Данных для вставки не найдено')
             return
 
         values = [(
@@ -62,7 +62,7 @@ class DBClient:
         ) for row in data]
 
         query = f'''
-        INSERT INTO {self.table} (client_id, gender, purchase_datetime, 
+        INSERT INTO {self._table} (client_id, gender, purchase_datetime, 
         product_id, quantity, price_per_item, discount_per_item, total_price)
         VALUES %s 
         ON CONFLICT (client_id, purchase_datetime, product_id) DO NOTHING
@@ -71,18 +71,18 @@ class DBClient:
         try:
             start_table_size = self._get_row_count()
 
-            psycopg2.extras.execute_values(self.cursor, query, values)
-            self.connection.commit()
+            psycopg2.extras.execute_values(self._cursor, query, values)
+            self._connection.commit()
 
             now_table_size = self._get_row_count()
             new_rows_count = now_table_size - start_table_size
 
-            self.logger.info(f'В таблицу {self.table} добавлено {new_rows_count} новых строк')
+            self._logger.info(f'В таблицу {self._table} добавлено {new_rows_count} новых строк')
         except Exception as ex:
-            self.connection.rollback()
-            self.logger.error(f'Ошибка при добавлении данных: {ex}')
+            self._connection.rollback()
+            self._logger.error(f'Ошибка при добавлении данных: {ex}')
 
     def close_connection(self):
-        self.cursor.close()
-        self.connection.close()
-        self.logger.info('Соединение с базой данных закрыто')
+        self._cursor.close()
+        self._connection.close()
+        self._logger.info('Соединение с базой данных закрыто')

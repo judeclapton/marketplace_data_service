@@ -13,35 +13,35 @@ class App:
     def __init__(self, historical_data_needed=False):
         load_dotenv(dotenv_path=os.path.join('config', '.env'))
 
-        self.project_name = os.path.basename(os.getcwd())
-        self.logger = Logger('App').get_logger()
-        self.api_client = ApiClient()
-        self.parser = DataParsing()
-        self.db_client = DBClient()
-        self.historical_data_needed = historical_data_needed
+        self._project_name = os.path.basename(os.getcwd())
+        self._logger = Logger('App').get_logger()
+        self._api_client = ApiClient()
+        self._parser = DataParsing()
+        self._db_client = DBClient()
+        self._historical_data_needed = historical_data_needed
 
-        if self.historical_data_needed:
-            self.historical_loader = HistoricalDataLoader(self.api_client, self.db_client, self.parser)
+        if self._historical_data_needed:
+            self._historical_loader = HistoricalDataLoader(self._api_client, self._db_client, self._parser)
         else:
-            self.daily_loader = DailyDataLoader(self.api_client, self.db_client, self.parser)
+            self._daily_loader = DailyDataLoader(self._api_client, self._db_client, self._parser)
 
     def run(self):
         start_time = datetime.now()
-        self.logger.info(f'Запуск работы «{self.project_name}»')
+        self._logger.info(f'Запуск работы «{self._project_name}»')
         try:
-            self.db_client.create_table()
-            if self.historical_data_needed:
-                self.logger.info('Запуск загрузки исторических данных')
-                self.historical_loader.load()
+            self._db_client.create_table()
+            if self._historical_data_needed:
+                self._logger.info('Запуск загрузки исторических данных')
+                self._historical_loader.load()
             else:
-                self.logger.info('Запуск загрузки данных за предыдущий день')
-                self.daily_loader.load()
+                self._logger.info('Запуск загрузки данных за предыдущий день')
+                self._daily_loader.load()
         except Exception as ex:
-            self.logger.error(f'Возникла ошибка: {ex}. Завершение работы')
+            self._logger.error(f'Возникла ошибка: {ex}. Завершение работы')
         finally:
-            self.db_client.close_connection()
-            self.logger.info(f'Завершение работы «{self.project_name}»')
+            self._db_client.close_connection()
+            self._logger.info(f'Завершение работы «{self._project_name}»')
             end_time = datetime.now()
             duration = (end_time - start_time).total_seconds()
-            self.logger.info(f'Загрузка завершена за {duration:.2f} секунд')
-            self.logger.info('=' * 60 + '\n')
+            self._logger.info(f'Загрузка завершена за {duration:.2f} секунд')
+            self._logger.info('=' * 60 + '\n')
