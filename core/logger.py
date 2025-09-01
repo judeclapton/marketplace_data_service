@@ -7,7 +7,7 @@ class Logger:
     def __init__(self, name):
         self.logger = None
         self.name = name
-        self.directory = 'logs'
+        self.directory = '_logs'
 
         self._logger_configure()
 

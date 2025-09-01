@@ -1,6 +1,6 @@
 import os
 import psycopg2
-from logger import Logger
+from core.logger import Logger
 from psycopg2.extras import execute_values
 
 

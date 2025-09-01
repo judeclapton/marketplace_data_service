@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from datetime import timedelta
-from logger import Logger
+from core.logger import Logger
 
 
 class BaseDataLoader(ABC):

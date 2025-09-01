@@ -1,7 +1,7 @@
 import os
 from datetime import date, timedelta
 import requests
-from base_data_loader import BaseDataLoader
+from loaders.base_data_loader import BaseDataLoader
 
 
 class HistoricalDataLoader(BaseDataLoader):

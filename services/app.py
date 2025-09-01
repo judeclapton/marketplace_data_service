@@ -1,17 +1,17 @@
 import os
 from datetime import datetime
 from dotenv import load_dotenv
-from api_client import ApiClient
-from daily_data_loader import DailyDataLoader
-from data_parsing import DataParsing
-from db_client import DBClient
-from historical_data_loader import HistoricalDataLoader
-from logger import Logger
+from core.api_client import ApiClient
+from loaders.daily_data_loader import DailyDataLoader
+from core.data_parsing import DataParsing
+from core.db_client import DBClient
+from loaders.historical_data_loader import HistoricalDataLoader
+from core.logger import Logger
 
 
 class App:
     def __init__(self, historical_data_needed=False):
-        load_dotenv()
+        load_dotenv(dotenv_path=os.path.join('config', '.env'))
 
         self.project_name = os.path.basename(os.getcwd())
         self.logger = Logger('App').get_logger()
@@ -26,7 +26,7 @@ class App:
             self.daily_loader = DailyDataLoader(self.api_client, self.db_client, self.parser)
 
     def run(self):
-        start_time = datetime.now()  # todo: test
+        start_time = datetime.now()
         self.logger.info(f'Запуск работы «{self.project_name}»')
         try:
             self.db_client.create_table()

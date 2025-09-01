@@ -1,5 +1,5 @@
 from datetime import date, timedelta
-from base_data_loader import BaseDataLoader
+from loaders.base_data_loader import BaseDataLoader
 
 
 class DailyDataLoader(BaseDataLoader):

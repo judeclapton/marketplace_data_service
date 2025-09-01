@@ -1,6 +1,6 @@
 import os
 import requests
-from logger import Logger
+from core.logger import Logger
 
 
 class ApiClient:
