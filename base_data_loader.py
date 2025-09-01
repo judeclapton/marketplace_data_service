@@ -1,8 +1,9 @@
+from abc import ABC, abstractmethod
 from datetime import timedelta
 from logger import Logger
 
 
-class _BaseDataLoader:
+class BaseDataLoader(ABC):
     def __init__(self, api_client, db_client, parser, name):
         self.logger = Logger(name).get_logger()
         self.api_client = api_client
@@ -25,5 +26,6 @@ class _BaseDataLoader:
                 self.logger.info(f'Данных за {current_date} нет')
             current_date += timedelta(days=1)
 
+    @abstractmethod
     def load(self):
         raise NotImplementedError

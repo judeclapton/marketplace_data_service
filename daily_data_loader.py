@@ -1,8 +1,8 @@
 from datetime import date, timedelta
-from base_data_loader import _BaseDataLoader
+from base_data_loader import BaseDataLoader
 
 
-class DailyDataLoader(_BaseDataLoader):
+class DailyDataLoader(BaseDataLoader):
     def __init__(self, api_client, db_client, parser, name='DailyDataLoader'):
         super().__init__(api_client, db_client, parser, name)
 

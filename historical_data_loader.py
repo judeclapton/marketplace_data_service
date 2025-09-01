@@ -1,10 +1,10 @@
 import os
 from datetime import date, timedelta
 import requests
-from base_data_loader import _BaseDataLoader
+from base_data_loader import BaseDataLoader
 
 
-class HistoricalDataLoader(_BaseDataLoader):
+class HistoricalDataLoader(BaseDataLoader):
     def __init__(self, api_client, db_client, parser,
                  from_date=date(2020, 1, 1), name='HistoricalDataLoader'):
         super().__init__(api_client, db_client, parser, name)
@@ -34,7 +34,9 @@ class HistoricalDataLoader(_BaseDataLoader):
         self.logger.info(f'Первая доступная дата с данными: {low}')
         return low
 
-    def load(self):
-        start_date = self._get_first_date()
-        end_date = date.today() - timedelta(days=1)
+    def load(self, start_date=None, end_date=None):
+        if start_date is None:
+            start_date = self._get_first_date()
+        if end_date is None:
+            end_date = date.today() - timedelta(days=1)
         self._load_range(start_date, end_date)

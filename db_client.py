@@ -46,7 +46,7 @@ class DBClient:
             log_message = f'Таблица {self.table} создана'
         self.logger.info(log_message)
 
-    def _get_table_size(self):
+    def _get_row_count(self):
         self.cursor.execute(f'SELECT COUNT(*) FROM {self.table}')
         return self.cursor.fetchone()[0]
 
@@ -69,12 +69,12 @@ class DBClient:
         '''
 
         try:
-            start_table_size = self._get_table_size()
+            start_table_size = self._get_row_count()
 
             psycopg2.extras.execute_values(self.cursor, query, values)
             self.connection.commit()
 
-            now_table_size = self._get_table_size()
+            now_table_size = self._get_row_count()
             new_rows_count = now_table_size - start_table_size
 
             self.logger.info(f'В таблицу {self.table} добавлено {new_rows_count} новых строк')
