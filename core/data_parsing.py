@@ -26,7 +26,7 @@ class DataParsing:
             self._logger.warning(f'Недопустимое значение gender: {record["gender"]} в записи: {record}')
             return False
 
-	if record['quantity'] == 0 and record['total_price'] == 0:
+        if record['quantity'] == 0 and record['total_price'] == 0:
             self._logger.warning(f'Нулевые значения количества и итоговой цены в записи: {record}')
             return False
 
