@@ -76,8 +76,6 @@ marketplace_data_service/
 - На основе данных 2023 года проведены два исследования, ссылки на которые приведены ниже
 
 ## Ссылки
-[Metabase-дашборд](http://83.166.244.221:3000/public/dashboard/c4e62357-2861-42db-b9d4-6bf64ccd2b77) | 
+[Metabase-дашборд](http://83.166.244.221:3000/public/dashboard/d52d1055-b582-4892-ad7b-0278b3ba320b) | 
 [Исследование по товарам](https://colab.research.google.com/drive/1-GgtkfiF23Pc9EeZYgR2-GmeUNEbq5ZA?usp=sharing) | 
 [Исследование по покупателям](https://colab.research.google.com/drive/1-FAPSTy9I-4TeSSNBaZD7iRkvyxZQkHm?usp=sharing)
-
-
